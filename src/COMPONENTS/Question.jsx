@@ -39,21 +39,21 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard }) 
             isCorrect: correctAnswerValue === currentQuestion.selected,
           };
         }
-
+        if(questionIndex === ques.length -1){
+          handleSubmit(updatedQues);
+        }
         return updatedQues;
       });
 
       if (questionIndex < ques.length - 1) {
         setQuestionIndex(questionIndex + 1);
         setQuestion(ques[questionIndex + 1]);
-      } else {
-        handleSubmit();
-      }
+      } 
     }
   };
 
-  const handleSubmit = () => {
-    const correctAnswersCount = ques.filter((x) => x.isCorrect)?.length;
+  const handleSubmit = (updatedQues) => {
+    const correctAnswersCount = updatedQues?.filter((x) => x.isCorrect)?.length;
     setScore(correctAnswersCount); // Update the score
     setShowScoreCard(true); // Show scorecard
     setQuizStarted(false);  // End quiz
