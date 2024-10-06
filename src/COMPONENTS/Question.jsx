@@ -2,11 +2,13 @@ import axios from 'axios';
 import React, { useState, useEffect } from 'react';
 import { StaticBtn } from './StaticBtn';
 
-function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard }) {
+function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard, difficulty, category }) {
   const [ques, setQues] = useState([]);
   const [questionIndex, setQuestionIndex] = useState(0);
   const [question, setQuestion] = useState([]);
   const [loading, setLoading] = useState(false);
+
+  console.log({ques})
 
   const handleSelectedAnswer = (event, id) => {
     const selectedAnswer = event.target.value;
@@ -24,10 +26,10 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard }) 
   const handleNextQuestion = () => {
     const currentQuestion = ques[questionIndex];
     if (currentQuestion) {
-      const correctAnswer = Object.entries(currentQuestion.correct_answers)
-        .find(([key, value]) => value === 'true')[0]
-        .replace('_correct', '');
-      const correctAnswerValue = currentQuestion.answers[correctAnswer];
+      const correctAnswer = Object?.entries(currentQuestion?.correct_answers)
+        ?.find(([key, value]) => value === 'true')[0]
+        ?.replace('_correct', '');
+      const correctAnswerValue = currentQuestion?.answers[correctAnswer];
 
       setQues((prev) => {
         const updatedQues = [...prev];
@@ -69,7 +71,7 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard }) 
   const fetchQuestions = () => {
     setLoading(true);
     axios
-      .get(`https://quizapi.io/api/v1/questions?apiKey=7fbC13VRtJWNwhJpF3s59zFqvERac4Y7as8xXKBD&limit=${numQuestions}`)
+      .get(`https://quizapi.io/api/v1/questions?apiKey=7fbC13VRtJWNwhJpF3s59zFqvERac4Y7as8xXKBD&limit=${numQuestions}&difficulty=${difficulty}&category=${category}`)
       .then((response) => {
         setQues(response.data);
         setQuestion(response.data[questionIndex]);
@@ -93,8 +95,15 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard }) 
         <div>
           <div key={question?.id} className="mb-4 flex flex-col justify-start text-start">
             <span className="text-lg font-semibold">
-              {`Q.No ${questionIndex + 1}: ${question?.question}`}
+              {`Q.No ${questionIndex + 1}: ${question?.question} ` }
+            <span className={`${question.difficulty == "Hard" ? "bg-red-500" : (question.difficulty == "Medium" ? "bg-yellow-500" : "bg-green-500") } text-white border rounded-lg text-sm px-2 py-1`}>
+            {question?.difficulty}
             </span>
+            {question?.category && <span className={`${question.difficulty == "Hard" ? "text-red-500" : (question.difficulty == "Medium" ? "text-yellow-500" : "text-green-500") } ml-1 border rounded-lg text-sm px-2 py-1`}>
+            {question?.category}
+            </span>}
+            </span>
+
             {question?.answers &&
               Object.entries(question.answers)
                 .filter(([, value]) => value !== null)

@@ -8,6 +8,9 @@ function App() {
   const [numQuestions, setNumQuestions] = useState(5);   // Track selected number of questions
   const [showScoreCard, setShowScoreCard] = useState(false); // Control scorecard visibility
   const [score, setScore] = useState(0);  // Track the user's score
+  const [difficulty, setDifficulty] = useState("")
+  const [category, setCategory] = useState("")
+
 
   const handleStartQuiz = () => {
     setQuizStarted(true);  // Start the quiz
@@ -24,6 +27,14 @@ function App() {
     // Do not reset numQuestions statically, user will be able to choose again
   };
 
+  const handleDifficulty=(event)=>{
+    setDifficulty(event.target.value)
+  }
+
+  const handleCategory =(event)=>{
+    setCategory(event.target.value)
+  }
+
   return (
     <div className="App flex flex-col items-center justify-center h-screen bg-gray-100">
       {quizStarted ? (
@@ -32,6 +43,8 @@ function App() {
           setQuizStarted={setQuizStarted}
           setScore={setScore}
           setShowScoreCard={setShowScoreCard} // Pass function to control scorecard
+          difficulty={difficulty}
+          category={category}
         />
       ) : showScoreCard ? (
         <div className="bg-white p-8 rounded-lg shadow-lg">
@@ -59,6 +72,25 @@ function App() {
             <option value={15}>15</option>
             <option value={20}>20</option>
             <option value={25}>25</option>
+          </select> <br></br>
+
+          <label className="text-lg font-semibold">Category: </label>
+          <select value={category} onChange={handleCategory} className="border rounded-md px-4 py-2 ml-2">
+            <option value="">Random</option>
+            <option value="SQL">SQL</option>
+            <option value="DevOps">DevOps</option>
+            <option value="Docker">Docker</option>
+            <option value="Linux">Linux</option>
+            
+          </select><br></br>
+
+          <label className="text-lg font-semibold">Difficulty: </label>
+          <select value={difficulty} onChange={handleDifficulty} className="border rounded-md px-4 py-2 ml-2">
+            <option value="">Random</option>
+            <option value="Easy">Easy</option>
+            <option value="Medium">Medium</option>
+            <option value="Hard">Hard</option>
+            
           </select>
           <StaticBtn>
             <button
