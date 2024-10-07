@@ -93,7 +93,7 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard, di
         <div>Loading questions...</div>
       ) : (
         <div>
-          <div key={question?.id} className="mb-4 flex flex-col justify-start text-start">
+          <div key={question?.id} className="mb-2 flex flex-col justify-start text-start">
             <span className="text-lg font-semibold">
               {`Q.No ${questionIndex + 1}: ${question?.question} ` }
             <span className={`${question.difficulty == "Hard" ? "bg-red-500" : (question.difficulty == "Medium" ? "bg-yellow-500" : "bg-green-500") } text-white border rounded-lg text-sm px-2 py-1`}>
@@ -108,16 +108,16 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard, di
               Object.entries(question.answers)
                 .filter(([, value]) => value !== null)
                 .map(([key, answer], i) => (
-                  <div key={i} className="mt-2 !cursor-pointer">
+                  <div key={i} className="mt-2">
                     <input
                       id={`answer-${key}`}  // Add unique id for each input
                       name={question.id}
                       type="radio"
                       value={answer}
                       onChange={(e) => handleSelectedAnswer(e, question.id)}
-                      className="mr-2 "
+                      className="mr-2 cursor-pointer"
                     />
-                    <label htmlFor={`answer-${key}`}>
+                    <label className='cursor cursor-pointer' htmlFor={`answer-${key}`}>
                       {answer}
                     </label>
                   </div>
