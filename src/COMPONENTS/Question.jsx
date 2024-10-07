@@ -10,14 +10,13 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard, di
 
   console.log({ques})
 
-  const handleSelectedAnswer = (event, id) => {
-    const selectedAnswer = event.target.value;
+  const handleSelectedAnswer = (event, id, answer) => {
     setQues((prev) => {
       const updatedQues = [...prev];
       const index = updatedQues.findIndex((item) => item.id === id);
 
       if (index !== -1) {
-        updatedQues[index] = { ...updatedQues[index], selected: selectedAnswer };
+        updatedQues[index] = { ...updatedQues[index], selected: answer };
       }
       return updatedQues;
     });
@@ -88,38 +87,56 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard, di
   }, []);
 
   return (
-    <div className="p-6 bg-white rounded-lg shadow-md">
+    <div className="p-8 bg-white rounded-lg shadow-md max-w-3xl mx-auto">
       {loading ? (
         <div>Loading questions...</div>
       ) : (
-        <div>
-          <div key={question?.id} className="mb-2 flex flex-col justify-start text-start">
-            <span className="text-lg font-semibold">
-              {`Q.No ${questionIndex + 1}: ${question?.question} ` }
-            <span className={`${question.difficulty == "Hard" ? "bg-red-500" : (question.difficulty == "Medium" ? "bg-yellow-500" : "bg-green-500") } text-white border rounded-lg text-sm px-2 py-1`}>
-            {question?.difficulty}
-            </span>
-            {question?.category && <span className={`${question.difficulty == "Hard" ? "text-red-500" : (question.difficulty == "Medium" ? "text-yellow-500" : "text-green-500") } ml-1 border rounded-lg text-sm px-2 py-1`}>
-            {question?.category}
-            </span>}
-            </span>
+        <div className="w-full max-w-2xl mx-auto">
+          <div key={question?.id} className="mb-6">
+            <h2 className="text-2xl font-semibold mb-4">
+              Q.No {questionIndex + 1}: {question?.question}
+            </h2>
+            <div className="flex items-center mb-4">
+              <span className={`text-white text-sm px-2 py-1 rounded-lg ${
+                question.difficulty === 'Hard'
+                  ? 'bg-red-500'
+                  : question.difficulty === 'Medium'
+                  ? 'bg-yellow-500'
+                  : 'bg-green-500'
+              }`}>
+                {question?.difficulty}
+              </span>
+              {question?.category && (
+                <span className={`ml-2 text-sm px-2 py-1 rounded-lg border ${
+                  question.difficulty === 'Hard'
+                    ? 'text-red-500 border-red-500'
+                    : question.difficulty === 'Medium'
+                    ? 'text-yellow-500 border-yellow-500'
+                    : 'text-green-500 border-green-500'
+                }`}>
+                  {question?.category}
+                </span>
+              )}
+            </div>
 
+            {/* Answers */}
             {question?.answers &&
               Object.entries(question.answers)
                 .filter(([, value]) => value !== null)
                 .map(([key, answer], i) => (
-                  <div key={i} className="mt-2">
-                    <input
-                      id={`answer-${key}`}  // Add unique id for each input
-                      name={question.id}
-                      type="radio"
-                      value={answer}
-                      onChange={(e) => handleSelectedAnswer(e, question.id)}
-                      className="mr-2 cursor-pointer"
-                    />
-                    <label className='cursor cursor-pointer' htmlFor={`answer-${key}`}>
-                      {answer}
-                    </label>
+                  <div 
+                    key={i}
+                    onClick={() => handleSelectedAnswer(null, question.id, answer)}
+                    className={`cursor-pointer block w-full text-lg font-medium bg-gray-100 hover:bg-blue-100 text-gray-800 px-6 py-2 rounded-md mb-2 transition-all ${
+                      ques[questionIndex]?.selected === answer
+                        ? 'border-2 border-blue-600'
+                        : ''
+                    } flex items-center justify-between`}
+                  >
+                    <span>{answer}</span>
+                    {ques[questionIndex]?.selected === answer && (
+                      <span className="text-blue-600 font-bold text-xl">✓</span>
+                    )}
                   </div>
                 ))}
           </div>
@@ -130,13 +147,13 @@ function Question({ numQuestions, setQuizStarted, setScore, setShowScoreCard, di
       <StaticBtn>
         <button
           onClick={handlePrevQuestion}
-          className="bg-gray-500 text-white px-4 py-2 rounded-lg hover:bg-gray-600 mr-2"
+          className="bg-gray-500 text-white px-6 py-2 rounded-lg hover:bg-gray-600 mr-2"
         >
           Prev
         </button>
         <button
           onClick={handleNextQuestion}
-          className="bg-blue-500 text-white px-4 py-2 rounded-lg hover:bg-blue-600"
+          className="bg-blue-500 text-white px-6 py-2 rounded-lg hover:bg-blue-600"
         >
           {questionIndex === ques.length - 1 ? 'Submit' : 'Next'}
         </button>
